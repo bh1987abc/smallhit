@@ -1,2 +1,179 @@
-<html>
+<html >
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>计算渗透压</title>
+	<style type="text/css">
+	body{font-size:28px;}
+		#content{margin: 0 auto;width: 100%;text-align:center;font-size:28px;}
+		table,table tr th, table tr td { border:1px solid #ffd966;font-size:28px; }
+		table { width: 80%; min-height: 500px; line-height:35px; text-align: center; border-collapse: collapse;margin: 10px auto;}   
+		input{width: 80%;font-size:28px;}
+		button{width: 100px;height: 50px;;font-size:28px}
+	}
+	}
+	</style>
+	<script type="text/javascript">
+	var context = [
+	{name:"20%脂肪乳",value:350},
+	{name:"10%脂肪乳",value:345},
+	{name:"中长链脂肪乳",value:273},
+	{name:"结构脂肪乳",value:350},
+	{name:"8.5%氨基酸",value:810},
+	{name:"11.4%氨基酸",value:1130},
+	{name:"15%氨基酸",value:620},
+	{name:"力太氨基酸",value:921},
+	{name:"卡文氨基酸",value:830},
+	{name:"生理盐水",value:308},
+	{name:"50%葡萄糖",value:2777},
+	{name:"10%葡萄糖",value:554},
+	{name:"5%葡萄糖",value:277},
+	{name:"甘油磷酸钠",value:2760},
+	{name:"多种微量元素",value:1900},
+	{name:"10%氯化钾",value:2685},
+	{name:"25%硫酸镁",value:4176},
+	{name:"10%葡萄糖酸钙",value:345},
+	{name:"10%氯化钠",value:3418}
+	];
+
+
+	function init(){
+		var ry = get("rongye");
+		var end = context.length%2;
+		var length = parseInt(context.length/2)+end;
+
+		for(var item = 0;item<length;item++){
+
+			var tr=document.createElement("tr");
+
+			var td=document.createElement("td");
+			var node=document.createTextNode(context[item*2].name);
+			td.appendChild(node);
+			tr.appendChild(td);
+			var td2=document.createElement("td");
+			var dd2=document.createElement("input");
+			dd2.onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')";
+			dd2.name=context[item*2].name;
+			td2.appendChild(dd2);
+			tr.appendChild(td2);
+			if(item==(length-1)&&end==1){
+				var td3=document.createElement("td");
+				tr.appendChild(td3);
+				var td4=document.createElement("td");	
+				tr.appendChild(td4);
+			}else if(item==(length-1)&&end==0){
+				var td3=document.createElement("td");
+				var node3=document.createTextNode(context[item*2+1].name);
+				td3.appendChild(node3);
+				tr.appendChild(td3);
+				var td4=document.createElement("td");
+				var dd4=document.createElement("input");
+				dd4.onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')";
+				dd4.name=context[item*2+1].name;
+				td4.appendChild(dd4);
+				tr.appendChild(td4);
+			}else{
+				var td3=document.createElement("td");
+				var node3=document.createTextNode(context[item*2+1].name);
+				td3.appendChild(node3);
+				tr.appendChild(td3);
+				var td4=document.createElement("td");
+				var dd4=document.createElement("input");
+				dd4.onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')";
+				dd4.name=context[item*2+1].name;
+				td4.appendChild(dd4);
+				tr.appendChild(td4);
+			}
+			ry.appendChild(tr);
+		}
+	}	
+	function compute(){
+		var rys = children(get("rongye"),"input");
+		var result = 0;
+		var num = 0;
+		for(var i=0;i<rys.length;i++){
+			var input = rys[i];
+			var name = input.name;
+			result+=context[i].value*(isNaN(parseInt(input.value))?0:parseInt(input.value));
+			
+			num+=isNaN(parseInt(input.value))?0:parseInt(input.value);
+			
+		}
+		var ss = "";
+
+		if(num!=0){
+			ss = (result/num).toFixed(2);
+		}
+		var a = get("result");
+		a.innerHTML=ss;
+		
+	}
+	function clearCompute(){
+		var rys = children(get("rongye"),"input");
+		var result = 0;
+		var num = 0;
+		for(var i=0;i<rys.length;i++){
+			var input = rys[i];
+			input.value="";
+		}
+		var a = get("result");
+		a.innerHTML="";
+		
+	}
+	function get(id){
+		return document.getElementById(id);
+	}
+	function children(curEle,tagName){
+               var nodeList = curEle.getElementsByTagName(tagName);
+               var ary = nodeList;
+
+              /* if(/MSIE(6|7|8)/.test(navigator.userAgent)){
+                   for(var i=0;i<nodeList.length;i++){
+                       var curNode = nodeList[i];
+                       if(curNode.nodeType ===1){
+                          ary[ary.length] = curNode;
+                       }
+                   }
+               }else{
+                   ary = Array.prototype.slice.call(curEle.children);
+               }*/
+               
+               // 获取指定子元素
+               if(typeof tagName === "string"){
+                   for(var k=0;k<ary.length;k++){
+                     curTag = ary[k];
+                     if(curTag.nodeName.toLowerCase() !== tagName.toLowerCase()){
+                      ary.splice(k,1);
+                      k--;
+                     }
+                   }
+               }
+
+               return ary;
+       }
+       function keydown(event){                //网页内按下回车触发
+		    if(event.keyCode==13)
+		    {
+		        compute();   
+		        return false;                               
+		    }
+		}
+	</script>
+
+</head>
+<body onload="init()" onkeydown="keydown(event)">
+	<div id="content">
+		<div id="end"><span>渗透压:</span><span id="result"></span></div>
+		<button onclick="compute()">确认</button>&nbsp;&nbsp;<button onclick="clearCompute()">清除</button>
+		
+		<table >
+			<thead><tr><th>溶液名字</th><th>溶液量/L</th><th>溶液名字</th><th>溶液量/L</th></tr></thead>
+			<tbody  id="rongye">
+				
+			</tbody>
+		</table>
+		
+		
+	</div>
+</body>
 </html>
